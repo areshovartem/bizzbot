@@ -1,0 +1,85 @@
+// Веб-прототип для BizzBot на JavaScript (используя HTML + JS)
+// Открой файл в браузере — всё работает без сервера
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>BizzBot — Налоговый помощник</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+    h1 { font-size: 1.5em; }
+    select, button, p { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🤖 BizzBot — Помощник по налогам и бухучету</h1>
+
+  <h2>⚙️ Ваш профиль</h2>
+  <label for="statusSelect">Выберите статус:</label>
+  <select id="statusSelect">
+    <option value="">-- выберите --</option>
+    <option value="Самозанятый">Самозанятый</option>
+    <option value="ИП">ИП</option>
+  </select>
+  <p id="statusSaved"></p>
+
+  <h2>📅 Календарь налогов</h2>
+  <button onclick="showCalendar()">Показать календарь</button>
+  <p id="calendarOutput"></p>
+
+  <h2>📚 Частые вопросы</h2>
+  <label for="faqSelect">Выберите вопрос:</label>
+  <select id="faqSelect">
+    <option value="">-- выберите --</option>
+    <option value="1">1. Когда платить налоги?</option>
+    <option value="2">2. Как зарегистрироваться как самозанятый?</option>
+    <option value="3">3. Какие налоги у ИП?</option>
+    <option value="4">4. Что делать, если пришло письмо из налоговой?</option>
+  </select>
+  <p id="faqAnswer"></p>
+
+  <script>
+    let userProfile = {};
+
+    document.getElementById('statusSelect').addEventListener('change', function() {
+      const status = this.value;
+      if (status) {
+        userProfile.status = status;
+        document.getElementById('statusSaved').innerText = `Статус сохранён: ${status}`;
+      } else {
+        document.getElementById('statusSaved').innerText = "";
+      }
+    });
+
+    function showCalendar() {
+      const month = new Date().toLocaleString('ru-RU', { month: 'long' });
+      if (!userProfile.status) {
+        document.getElementById('calendarOutput').innerText = "Сначала выберите статус: ⚙️ Выбрать статус";
+        return;
+      }
+      let output = '';
+      if (userProfile.status === "Самозанятый") {
+        output = `📅 Налоги для самозанятых на ${month}:
+- До 25 числа: оплатить налог через приложение 'Мой налог'.`;
+      } else {
+        output = `📅 Налоги для ИП на ${month}:
+- До 25 числа: уплата УСН / ПСН.
+- До 30 числа: взносы в ПФР.`;
+      }
+      document.getElementById('calendarOutput').innerText = output;
+    }
+
+    document.getElementById('faqSelect').addEventListener('change', function() {
+      const answers = {
+        "1": "Налоги платятся до 25 числа каждого месяца за прошлый месяц. Самозанятые — через приложение 'Мой налог'.",
+        "2": "Зайди в приложение 'Мой налог', выбери 'Стать самозанятым' и следуй шагам.",
+        "3": "ИП на УСН платит 6% с дохода + фиксированные взносы в ПФР и ФОМС.",
+        "4": "Не паникуй! Открой письмо, узнай суть. Если непонятно — напиши нам, мы подскажем."
+      };
+      const value = this.value;
+      document.getElementById('faqAnswer').innerText = value ? `Ответ: ${answers[value]}` : '';
+    });
+  </script>
+</body>
+</html>
